@@ -1,20 +1,48 @@
 # ANNA
+
+
 ![alt-image](https://github.com/Anna-Assistant/Anna/blob/master/img/Tile%20Image(1400x560).png)
 
-[![GitHub package version](https://img.shields.io/github/package-json/v/badges/shields.svg)](https://github.com/Anna-Assistant/Anna/)
-[![GitHub issues](https://img.shields.io/github/issues/Anna-Assistant/Anna.svg)](https://github.com/Anna-Assistant/Anna/issues)
-[![Codacy grade](https://img.shields.io/codacy/grade/e27821fb6289410b8f58338c7e0bc686.svg)](https://github.com/Anna-Assistant/Anna)
 [![Zulip Chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://anna.zulipchat.com/)
 [![Download From Chrome-Webstore](https://img.shields.io/badge/download-chrome--westore-brightgreen.svg)](https://chrome.google.com/webstore/detail/anna-assistant/kmkkgdkinnjokklbfloikdbdohbiklog)
 [![HitCount](http://hits.dwyl.io/gauthamzz/Anna-Assistant/Anna.svg)](http://hits.dwyl.io/gauthamzz/Anna-Assistant/Anna)
-[![Read the Docs](https://img.shields.io/readthedocs/pip.svg)](https://github.com/Anna-Assistant/Anna/tree/master/docs)
-[![GitHub last commit](https://img.shields.io/github/last-commit/google/skia.svg)](https://github.com/Anna-Assistant/Anna/commits/master)
-[![Twitter URL](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/anna_assistant)
 [![Code Helpers Badge](https://www.codetriage.com/anna-assistant/anna/badges/users.svg)](https://www.codetriage.com/anna-assistant/anna)
 
-Meet Anna, your very own personal assistant on [Google Chrome Webstore](https://chrome.google.com/webstore/detail/anna-assistant/kmkkgdkinnjokklbfloikdbdohbiklog).
+Anna is a community driven ambitious virtual assistant on Google Chrome to help people Automate actions using Voice. :elephant:
 
-[Like the project,Please Support via Donation](https://www.patreon.com/annaassistant)
+Sounds boring. Let's try again.
+
+Meet Anna, your very own personal assistant on [Google Chrome Webstore](https://chrome.google.com/webstore/detail/anna-assistant/kmkkgdkinnjokklbfloikdbdohbiklog). It will make your life so effort less. You don't have to open broswer and type your broswer what to do. Instead just talk to your computer, like it is your best friend. 
+
+It won't do everything, but it will reduce the time to do certain things. You want to take a screenshot, say "hey, screenshot". You want to open a website like facebook, say "hey, open facebook". It can do so much [more](https://github.com/Anna-Assistant/Anna/blob/master/docs/HowItWorks.md). **When you have a voice, speak up. Don't type.**
+
+Anna is still in alpha, that means she is still learning and won't work sometimes. But if you love the idea, you could make her amazing. You can teach her things, help others teach her things or just installing her and giving us your valuable feedback and ideas. **Dicuss on [Product hunt](https://www.producthunt.com/posts/anna-assistant)** about Anna.
+
+If you love to support Anna consider Buying me a Coffee to help build Anna. You support can go a long away. Lets not make all the assistants owned by big MNC, lets build our own and make tech better. :star:
+
+<a href="https://www.buymeacoffee.com/MqTYEIw" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
+
+
+Watch Anna in action on [Youtube](https://youtu.be/o3xmL-TqK5o):
+
+
+[![Watch on Youtube](https://github.com/Anna-Assistant/Anna/blob/master/img/Youtube.png)](https://youtu.be/o3xmL-TqK5o
+)
+
+More videos on [Youtube](https://www.youtube.com/watch?v=17bVrAZMgEY).
+
+
+# FAQ
+
+- [What are all the things Anna can do?](https://github.com/Anna-Assistant/Anna/blob/master/docs/HowItWorks.md)
+- [How to add new features?](https://github.com/Anna-Assistant/Anna/blob/master/docs/AdditionOfNewFeatures.md)
+- [How to install Anna?](https://github.com/Anna-Assistant/Anna/blob/master/docs/HowToInstallGuide.md)
+- [How are the files arranged?](https://github.com/Anna-Assistant/Anna/blob/master/docs/ArrangementOfFiles.md)
+
+
+[https://anna-assistant.github.io/](https://anna-assistant.github.io/)
+
+You can talk to us on  [Zulip](https://anna.zulipchat.com/) or [Tweet](https://twitter.com/anna_assistant) or comment on issues to contribute.
 
 # A few examples of what can be done
 
@@ -41,24 +69,4 @@ All you need to do is say "Hey" before your requests. Feel free to [add to this 
 | open up Twitter and post "life is awesome" | Hey, post life is awesome |
 
 You can also, ask a joke, have a conversation, and much, much more. To find a full list of Anna's functions [click here](https://github.com/Anna-Assistant/Anna/blob/master/docs/HowItWorks.md)
-
-Watch Anna in action on [Youtube](https://youtu.be/o3xmL-TqK5o):
-
-[![Watch on Youtube](https://github.com/Anna-Assistant/Anna/blob/master/img/Youtube.png)](https://youtu.be/o3xmL-TqK5o
-)
-
-More videos on [Youtube](https://www.youtube.com/watch?v=17bVrAZMgEY).
-
-
-# FAQ
-
-- [What are all the things Anna can do?](https://github.com/Anna-Assistant/Anna/blob/master/docs/HowItWorks.md)
-- [How to add new features?](https://github.com/Anna-Assistant/Anna/blob/master/docs/AdditionOfNewFeatures.md)
-- [How to install Anna?](https://github.com/Anna-Assistant/Anna/blob/master/docs/HowToInstallGuide.md)
-- [How are the files arranged?](https://github.com/Anna-Assistant/Anna/blob/master/docs/ArrangementOfFiles.md)
-- For Opencode participants Bitsize is 10 points, Medium 20 and Hard 30 
-
-[https://anna-assistant.github.io/](https://anna-assistant.github.io/)
-
-You can talk to us on  [Zulip](https://anna.zulipchat.com/) or [Tweet](https://twitter.com/anna_assistant) or comment on issues to contribute.
 

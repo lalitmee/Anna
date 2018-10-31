@@ -10,11 +10,18 @@ $(document).ready(function() {
   var talking = true;
   var recognition;
   var txt;
-  var id = 1; //for screenshots
-  var voicetrigger;
+  var screenshotId = 1;
   var status = "active"; //for storing listening status
+  var debug = false;
+  var our_trigger = "hey ";
+  var wordnikAPIKey = "";
+  var voices;
+  var currentVoice;
   startRecognition();
   checkOnline();
+  if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = populateVoiceList;
+  }
 
   //first time when application will be loaded
   chrome.storage.local.get( /* String or Array */ ["firsttime"], function(items2) {
@@ -79,6 +86,7 @@ $(document).ready(function() {
   function checkOnline() {
       if (!navigator.onLine && !offline) {
           offline = true;
+        //   voices = [];
           chrome.storage.local.set({
               "onoffswitch": "false"
           }, function() {
@@ -118,11 +126,15 @@ $(document).ready(function() {
                         chrome.tabs.executeScript(tabId, {
                             file: "js/set_status_icon.js"
                         }, function() {
-                            // console.log("Status set to " + newStatus);
+                            if (debug){
+                              console.log("Status set to " + newStatus);
+                            }
                         });
                     });
                 } catch (e) {
-                    // console.log("Error Message: " + e);
+                    if (debug){
+                      console.log("Error Message: " + e);
+                    }
                 }
             });
         });
@@ -143,26 +155,29 @@ $(document).ready(function() {
                   for (var i = event.resultIndex; i < event.results.length; ++i) {
                       text += event.results[i][0].transcript;
                   }
-
-                  //setInput("hey open facebook");
-
-                  //stopRecognition();
+                  if(debug){
+                    setInput("hey open facebook");
+                    stopRecognition();
+                  }
               };
               recognition.onend = function() {
-                  var our_trigger = "hey ";
+                  
 
                   if (text.toLowerCase() === our_trigger.toLowerCase()) {
                       changeStatus("active");
-                      
-                      // alert(text);
+                      if(debug){
+                        alert(text);
+                      }
                       Speech("Yes Sir");
                       sleep(1500);
-                      /*chrome.storage.local.clear(function() {
-          var error = chrome.runtime.lastError;
-          if (error) {
-          console.error(error);
-          }
-        });*/
+                      if (debug){
+                        chrome.storage.local.clear(function() {
+                        var error = chrome.runtime.lastError;
+                        if (error) {
+                          console.error(error);
+                        }
+                        });
+                      }
                       recognition.stop();
                       startRecognitionaftertrigger();
                   } else
@@ -177,8 +192,6 @@ $(document).ready(function() {
                       recognition.stop();
                       startRecognition();
                   }
-
-                  // stopRecognition();
               };
               recognition.lang = "en-US";
               recognition.start();
@@ -198,16 +211,19 @@ $(document).ready(function() {
   function startRecognitionaftertrigger() {
       recognition = new webkitSpeechRecognition();
       recognition.onstart = function(event) {
-          //updateRec();
+          if(debug){
+            updateRec();
+          }
       };
       var text = "";
       recognition.onresult = function(event) {
           for (var i = event.resultIndex; i < event.results.length; ++i) {
               text += event.results[i][0].transcript;
           }
-          //setInput(text);
-
-          //stopRecognition();
+          if(debug){
+            setInput(text);
+            stopRecognition();
+          }
       };
       recognition.onend = function() {
           if (text === "") {
@@ -228,7 +244,6 @@ $(document).ready(function() {
           recognition.stop();
           recognition = null;
       }
-      // updateRec();
   }
   //to switch 
   function switchRecognition() {
@@ -250,12 +265,18 @@ $(document).ready(function() {
   }
   //sending the data to server
   function send() {
-      // alert('you said ' + txt);
-      // setResponse('you said ' + txt);
-    //   console.log('user said ' + txt);
-      txt = txt.replace('hey ', '');
-      // alert(txt);
-      tasks();
+      if (debug){
+        alert('you said ' + txt);
+        setResponse('you said ' + txt);
+        console.log('user said ' + txt);
+        txt = txt.replace(our_trigger, '');
+        alert(txt);
+        tasks();
+      }
+      else{
+        txt = txt.replace(our_trigger, '');
+        tasks();
+      }
   }
 
 
@@ -340,7 +361,9 @@ $(document).ready(function() {
                   });
               } else if (data.result.metadata.intentName === "tweet") {
                   tweet(data.result.parameters.any);
-                  // chrome.tabs.create({ 'url': "http://www." + data.result.parameters.website });
+                  if(debug){
+                    chrome.tabs.create({ 'url': "http://www." + data.result.parameters.website });
+                  }
               } else if (data.result.metadata.intentName === "maps") {
                   chrome.tabs.create({
                       'url': "https://www.google.com/maps/dir/" + data.result.parameters["geo-city"][0] + "/" + data.result.parameters["geo-city"][1]
@@ -353,17 +376,21 @@ $(document).ready(function() {
                   chrome.tabs.create({
                       'url': "https://www.google.com/maps/?q=" + data.result.parameters.any
                   });
+              } else if (data.result.metadata.intentName === "lyrics") {
+                  chrome.tabs.create({
+                      'url': "https://www.google.com/search?q=lyrics+for+" + data.result.parameters.any + "&btnI"
+                  });
               } else if (data.result.metadata.intentName == "weather") {
                   weather(data.result.parameters.any);
               } else if (data.result.metadata.intentName == "screenshot") {
                   takeScreenshot();
               } else if (data.result.metadata.intentName == "reversesearch") {
                   reverseSearch();
-              } else if (data.result.metadata.intentName == "ducky") {
-                  duckduckgoOrGoogle(data.result.parameters.any);
               } else if (data.result.source == "domains") {
                   setResponse(data.result.fulfillment.speech);
-                  // alert(data.result.fulfillment.speech);
+                  if(debug){
+                        alert(data.result.fulfillment.speech);
+                      }
               } else if (data.result.metadata.intentName == "motivate") {
                   speakAQuote();
               } else if (data.result.metadata.intentName == "close") {
@@ -371,15 +398,47 @@ $(document).ready(function() {
                       tab = tab.id;
                       chrome.tabs.remove(tab, function() {});
                       tabUrl = tab.url;
-                      //alert(tab.url);
+                      if(debug){
+                        alert(tab.url);
+                      }
                   });
                   Speech("closing");
-              } else {
-                  // setResponse(data.result.fulfillment.speech);
+              } else if (data.result.metadata.intentName === "cache") {
                   chrome.tabs.create({
-                      'url': 'http://google.com/search?q=' + txt
+                      'url': 'chrome://settings/clearBrowserData'
                   });
-                  // chrome.tabs.create({ 'url': 'http://google.com/search?q=' + txt });
+              } else if (data.result.metadata.intentName == "horoscope") {
+                  getHoroscope(data.result.parameters.any);
+              }
+              else if (data.result.metadata.intentName == "wotd") {
+                  getWOTD();
+              } else {
+                chrome.tabs.create({
+                    'url': 'http://google.com/search?q=' + txt
+                });
+                if (debug)
+                {
+                chrome.tabs.executeScript({
+                        code: "document.getElementsByClassName('_XWk')[0].innerHTML;"
+                }, function(selection) {  _XWk
+                alert(selection[0]);
+                if (selection[0] === null) {
+                        chrome.tabs.executeScript({
+                                code: "var rex = /(<([^>]+)>)/ig; document.getElementsByClassName('_Tgc')[0].innerHTML.replace(rex,'').split('.')[0];"
+                        }, function(sl) {
+                        if (sl[0] === null) {
+                          chrome.tabs.executeScript({
+                              code: "var rex = /(<([^>]+)>)/ig; document.getElementsByClassName('st')[0].innerHTML.replace(rex,'').split('.')[0];"
+                          }, function(sl2) {
+                              Speech("According to Google " + sl2[0]);
+                          });
+                        } else
+                          Speech("According to Google " + sl[0]);
+                        });
+                } else
+                        Speech(selection[0]);
+                });
+                }
               }
           },
           error: function() {
@@ -465,10 +524,14 @@ $(document).ready(function() {
                               chrome.tabs.create({
                                   url: searchURL
                               }, function(tab) {
-                                //   console.log("reverse search successful");
+                                if(debug){
+                                  console.log("reverse search successful");
+                                }
                               });
                           } else {
-                            //   console.log("Sorry, Unable to perform reverse search!");
+                              if(debug){
+                                console.log("Sorry, Unable to perform reverse search!");
+                              }
                           }
                       };
                       xhr.send(fd);
@@ -493,10 +556,14 @@ $(document).ready(function() {
                       chrome.tabs.create({
                           url: searchURL
                       }, function(tab) {
-                        //   console.log("reverse search successful");
+                        if(debug){
+                          console.log("reverse search successful");
+                        }
                       });
                   } else {
-                    //   console.log("Sorry, Unable to perform reverse search!");
+                      if(debug){
+                        console.log("Sorry, Unable to perform reverse search!");
+                      }
                   }
               };
               xhr.send(fd);
@@ -521,7 +588,7 @@ function swapTab() {
   function takeScreenshot() {
 
       chrome.tabs.captureVisibleTab(function(screenshotUrl) {
-          var viewTabUrl = chrome.extension.getURL('screenshot.html?id=' + id++)
+          var viewTabUrl = chrome.extension.getURL('screenshot.html?id=' + screenshotId++)
           var targetId = null;
 
           //asking for image crop from user
@@ -531,8 +598,9 @@ function swapTab() {
               getCroppedImage(screenshotUrl, "screenshot");
               chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                   if (message.callbackMethod === "screenshot") {
-                    //   console.log("CroppedImage Recieved!!");
-
+                     if(debug){
+                        console.log("CroppedImage Recieved!!");
+                      }
                       chrome.tabs.onUpdated.addListener(function listener(tabId, changedProps) {
                           // we are waiting for the tab to be open
                           if (tabId != targetId || changedProps.status != "complete")
@@ -611,10 +679,12 @@ function swapTab() {
       setResponse(weather_response);
       alert(weather_response);
 
-      //alert("temperature is  "+temperature);
-      //alert("humidity is "+humidity);
-      //alert("wind speed is "+windSpeed);
-      //alert("sky description "+cloudsDescription);
+      if(debug){
+        alert("temperature is  "+temperature);
+        alert("humidity is "+humidity);
+        alert("wind speed is "+windSpeed);
+        alert("sky description "+cloudsDescription);   
+      }
   }
 
   function weather(city) {
@@ -645,13 +715,9 @@ function swapTab() {
       });
   }
 
-  // TO DO - Fix this
   function speakAQuote() {
       var quoteUrl = 'http://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json';
       $.getJSON(quoteUrl, function(data) {
-          // alert("inside");
-          // alert(data.length);
-
           setResponse(data.quoteText);
           chrome.tabs.create({
               'url': data.quoteLink
@@ -661,15 +727,48 @@ function swapTab() {
               'url': 'https://forismatic.com/en/homepage'
           });
       });
-      // alert('m here');
+  }
+
+  function getHoroscope(sign) {
+      var url = "http://horoscope-api.herokuapp.com/horoscope/today/"+sign;
+      var linkUrl = "https://www.ganeshaspeaks.com/horoscopes/daily-horoscope/"+sign;
+      var responseText = "Today's horoscope for "+sign+", ";
+     $.getJSON(url, function(data) {
+          setResponse(responseText+data.horoscope);
+          chrome.tabs.create({
+              'url': linkUrl
+          });
+      }).fail(function() {
+          chrome.tabs.create({
+              'url': linkUrl
+          });
+      });
+  }
+
+  function getWOTD() {
+      var wotdURL = 'http://api.wordnik.com/v4/words.json/wordOfTheDay?api_key='+wordnikAPIKey;
+      $.getJSON(wotdURL, function(data) {
+          var wotdResponse = data.word + " means " + data.definitions.text;
+          setResponse(wotdResponse);
+          chrome.tabs.create({
+              'url': 'https://www.wordnik.com/word-of-the-day'
+          });
+      }).fail(function() {
+          chrome.tabs.create({
+              'url': 'https://www.wordnik.com/word-of-the-day'
+          });
+      });
   }
 
   function duckduckgoOrGoogle(query) {
-      // alert('duckduckgoOrGoogle ' + query);
+      if(debug){
+        alert('duckduckgoOrGoogle ' + query);
+      }
       var duckduckgoApiUrl = 'https://api.duckduckgo.com/';
       var remote = duckduckgoApiUrl + '?q=' + encodeURIComponent(query) + '&format=json';
-      // alert(remote);
-
+      if(debug){
+        alert(remote);
+      }   
       $.getJSON(remote, function(data) {
           if (data.AbstractText != '') {
               setResponse(data.AbstractText);
@@ -691,12 +790,16 @@ function swapTab() {
   }
 
   function tweet(tweets) {
-      // var tweets=document.getElementById('tweetText').value;
+      if(debug){
+        var tweets=document.getElementById('tweetText').value;
+      }
       var url = 'http://twitter.com/home?status=' + encodeURIComponent(tweets);
       chrome.tabs.create({
           'url': url
       });
-      // openInNewTab(url);
+      if(debug){
+        openInNewTab(url);
+      }
   }
 
   function searchYoutube(temp) {
@@ -713,14 +816,53 @@ function swapTab() {
               $.each(data.items, function(i, item) {
                   var videoID = item.id.videoId;
                   var nurl = "https://www.youtube.com/watch?v=" + videoID;
-                  // alert(temp + videoID);
-                  // openInNewTab(nurl);
+                  if(debug){
+                    alert(temp + videoID);
+                    openInNewTab(nurl);
+                  }
                   chrome.tabs.create({
                       'url': nurl
                   });
                   return false;
               });
           });
+  }
+
+  function populateVoiceList() {
+    if(typeof speechSynthesis === 'undefined') {
+      return;
+    }
+  
+    voices = speechSynthesis.getVoices();
+  
+    for(i = 0; i < voices.length ; i++) {
+      var option = document.createElement('option');
+      option.textContent = voices[i].name + ' (' + voices[i].lang + ')';
+      
+      if(voices[i].default) {
+        option.textContent += ' -- DEFAULT';
+      }
+  
+      option.setAttribute('data-lang', voices[i].lang);
+      option.setAttribute('data-name', voices[i].name);
+      document.getElementById("voiceSelect").appendChild(option);
+    }
+
+
+    currentVoice = JSON.parse(localStorage.getItem('currentVoice_Anna'));
+    if(currentVoice){
+        document.getElementById("voiceSelect").selectedIndex = currentVoice.index;
+    }
+      
+
+    $(function () {
+        $("#voiceSelect").on('change', function() {
+            currentVoice = jQuery.extend({}, voices[this.selectedIndex]);
+            currentVoice.index = this.selectedIndex;
+            localStorage.setItem('currentVoice_Anna', JSON.stringify(currentVoice));
+          });
+    });
+
   }
 
 
@@ -732,9 +874,13 @@ function swapTab() {
       if ('speechSynthesis' in window && talking) {
           var language = window.navigator.userLanguage || window.navigator.language;
           var utterance = new SpeechSynthesisUtterance(say);
-          //msg.voice = voices[10]; // Note: some voices don't support altering params
-          //msg.voiceURI = 'native';
-          if (timevocal == 1) {
+          currentVoice = JSON.parse(localStorage.getItem('currentVoice_Anna'));
+          if(currentVoice){
+              utterance.volume = 1; // 0 to 1
+              utterance.pitch = 0; //0 to 2
+              utterance.voice = voices[currentVoice.index];
+              speechSynthesis.speak(utterance);
+          }else if (timevocal == 1) {
               utterance.volume = 1; // 0 to 1
               utterance.pitch = 0; //0 to 2
               utterance.voiceURI = 'native';
@@ -743,13 +889,13 @@ function swapTab() {
               timevocal = 0
           } else {
               utterance.volume = 1; // 0 to 1
-              //utterance.rate = 0.1; // 0.1 to 10
               utterance.pitch = 0; //0 to 2
-              //utterance.text = 'Hello World';
               utterance.voiceURI = 'native';
               utterance.lang = "hi-IN";
               speechSynthesis.speak(utterance);
           }
       }
   }
+
+
 });

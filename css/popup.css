@@ -20,7 +20,7 @@ html {
 body {
     background:  #fff;
     background-position-y: 5px;
-    width: 320px;
+    width: 340px;
     overflow-y: auto;
     overflow-x: hidden;
     font-size: 12px;
@@ -88,7 +88,7 @@ header h1 {
 .mdl-tabs__tab {
     margin: 0;
     border: none;
-    padding: 0 35px;
+    padding: 0 40px;
     float: left;
     position: relative;
     display: block;
@@ -327,7 +327,7 @@ a:active {
 
 .mdl-tabs__panel {
     height: 180px;
-    overflow-y: auto
+    overflow-y: hidden
 }
 
 #settings h5 {
